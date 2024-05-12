@@ -2,10 +2,9 @@ import sys
 import requests
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout,
-    QWidget, QStackedWidget, QListWidget, QListWidgetItem, QMessageBox,
-    QCalendarWidget, QHBoxLayout
+    QWidget, QStackedWidget, QListWidget, QListWidgetItem, QMessageBox
 )
-from PyQt6.QtGui import QColor, QFont, QPalette, QPixmap, QIcon
+from PyQt6.QtGui import QColor, QFont, QPalette, QPixmap
 from PyQt6.QtCore import Qt
 
 class LoginScreen(QWidget):
@@ -44,7 +43,7 @@ class LoginScreen(QWidget):
         password = self.password_input.text()
 
         # Kullanıcı adı ve şifre kontrolü
-        if username == "kullanici" and password == "sifre":
+        if username == "admin" and password == "password":
             self.status_label.setText("Giriş Başarılı!")
             self.status_label.setStyleSheet("color: green")
             self.window().show_library()
@@ -79,6 +78,8 @@ class BookDetails(QWidget):
 
         self.author_label = QLabel("Yazar: Bilinmiyor", self)
         self.author_label.move(50, 80)
+        self.author_label.setFixedWidth(200)  # Yazar etiketi genişliğini artır
+        self.author_label.setFont(QFont("Arial", 12))  # Font boyutunu küçült
 
         self.publisher_label = QLabel("Yayın Evi: Bilinmiyor", self)
         self.publisher_label.move(50, 110)
@@ -104,7 +105,7 @@ class LibrarySystem(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Kütüphane Yönetim Sistemi")
-        self.setGeometry(100, 100, 800, 400)
+        self.setGeometry(100, 100, 600, 400)
 
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
@@ -114,7 +115,7 @@ class LibrarySystem(QMainWindow):
         self.stacked_widget.addWidget(self.login_screen)
 
         self.library_screen = QWidget()
-        self.library_layout = QHBoxLayout()
+        self.library_layout = QVBoxLayout()  # Layout değiştirildi
         self.library_screen.setLayout(self.library_layout)
         self.stacked_widget.addWidget(self.library_screen)
 
@@ -158,15 +159,15 @@ class LibrarySystem(QMainWindow):
     def fetch_book_info(self, book_title):
         book_info = {
             "1984": {"author": "George Orwell", "publisher": "Yayınevi A", "year": "1949", "cover_url": "https://i.dr.com.tr/cache/600x600-0/originals/0000000064038-1.jpg"},
-            "Bülbülü Öldürmek": {"author": "Harper Lee", "publisher": "Yayınevi B", "year": "1960", "cover_url": "https://via.placeholder.com/150"},
-            "Sefiller": {"author": "Victor Hugo", "publisher": "Yayınevi C", "year": "1862", "cover_url": "https://via.placeholder.com/150"},
-            "Harry Potter ve Felsefe Taşı": {"author": "J.K. Rowling", "publisher": "Yayınevi D", "year": "1997", "cover_url": "https://via.placeholder.com/150"},
-            "Dönüşüm": {"author": "Franz Kafka", "publisher": "Yayınevi E", "year": "1915", "cover_url": "https://via.placeholder.com/150"},
-            "Yeraltından Notlar": {"author": "Fyodor Dostoyevski", "publisher": "Yayınevi F", "year": "1864", "cover_url": "https://via.placeholder.com/150"}
+            "Bülbülü Öldürmek": {"author": "Harper Lee", "publisher": "Yayınevi B", "year": "1960", "cover_url": "https://i.dr.com.tr/cache/600x600-0/originals/0001863920001-1.jpg"},
+            "Sefiller": {"author": "Victor Hugo", "publisher": "Yayınevi C", "year": "1862", "cover_url": "https://i.dr.com.tr/cache/600x600-0/originals/0000000623702-1.jpg"},
+            "Harry Potter ve Felsefe Taşı": {"author": "J.K. Rowling", "publisher": "Yayınevi D", "year": "1997", "cover_url": "https://i.dr.com.tr/cache/600x600-0/originals/0000000105599-1.jpg"},
+            "Dönüşüm": {"author": "Franz Kafka", "publisher": "Yayınevi E", "year": "1915", "cover_url": "https://www.ayrintiyayingrubu.com/wp-content/uploads/2023/02/donusum8f8e1f0a39e8e5ea09bc416f544def57.jpg"},
+            "Yeraltından Notlar": {"author": "Fyodor Dostoyevski", "publisher": "Yayınevi F", "year": "1864", "cover_url": "https://img.kitapyurdu.com/v1/getImage/fn:11428283/wh:true/wi:500"}
         }
         info = book_info.get(book_title)
         if info:
-            self.book_details.author_label.setText(f"Yazar: {info['author']}")
+            self.book_details.author_label.setText(f"Yazar: {info['author'][:20]}...")  # Yazar adını kısaltarak göster
             self.book_details.publisher_label.setText(f"Yayın Evi: {info['publisher']}")
             self.book_details.year_label.setText(f"Basım Yılı: {info['year']}")
             response = requests.get(info['cover_url'])
@@ -180,7 +181,7 @@ if __name__ == "__main__":
     app.setStyle("Fusion")
 
     palette = app.palette()
-    palette.setColor(QPalette.ColorRole.Window, QColor("#001F3F"))  # Koyu mavi tema
+    palette.setColor(QPalette.ColorRole.Window, QColor("#333333")) 
     palette.setColor(QPalette.ColorRole.WindowText, QColor(255, 255, 255))
     app.setPalette(palette)
 
